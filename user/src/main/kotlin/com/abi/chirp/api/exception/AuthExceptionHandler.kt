@@ -1,7 +1,9 @@
 package com.abi.chirp.api.exception
 
+import com.abi.chirp.domain.exception.InvalidCredentialsException
 import com.abi.chirp.domain.exception.InvalidTokenException
 import com.abi.chirp.domain.exception.UserAlreadyExistsException
+import com.abi.chirp.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -46,4 +48,23 @@ class AuthExceptionHandler {
                 )
             )
     }
+
+    @ExceptionHandler(UserNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun onUserNotFound(
+        e: UserNotFoundException
+    ) = mapOf(
+        "code" to "USER_NOT_FOUND",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(InvalidCredentialsException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onInvalidCredentials(
+        e: InvalidCredentialsException
+    ) = mapOf(
+        "code" to "INVALID_CREDENTIALS",
+        "message" to e.message
+    )
+
 }
