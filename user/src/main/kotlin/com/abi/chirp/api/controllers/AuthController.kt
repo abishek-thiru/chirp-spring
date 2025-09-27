@@ -1,9 +1,6 @@
 package com.abi.chirp.api.controllers
 
-import com.abi.chirp.api.dto.AuthenticatedUserDto
-import com.abi.chirp.api.dto.LoginRequest
-import com.abi.chirp.api.dto.RegisterRequest
-import com.abi.chirp.api.dto.UserDto
+import com.abi.chirp.api.dto.*
 import com.abi.chirp.api.mappers.toAuthenticatedUserDto
 import com.abi.chirp.api.mappers.toUserDto
 import com.abi.chirp.service.auth.AuthService
@@ -28,7 +25,7 @@ class AuthController(private val authService: AuthService) {
         ).toUserDto()
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     fun login(
         @RequestBody body: LoginRequest
     ): AuthenticatedUserDto {
@@ -37,4 +34,13 @@ class AuthController(private val authService: AuthService) {
             password = body.password
         ).toAuthenticatedUserDto()
     }
+
+    @PostMapping("/refresh")
+    fun refresh(
+        @RequestBody body: RefreshRequest
+    ): AuthenticatedUserDto {
+        return authService.refresh(body.refreshToken)
+            .toAuthenticatedUserDto()
+    }
+
 }
