@@ -1,4 +1,4 @@
-package com.abi.chirp.service.auth
+package com.abi.chirp.service
 
 import com.abi.chirp.domain.exception.InvalidTokenException
 import com.abi.chirp.domain.model.UserId
