@@ -1,4 +1,4 @@
-package com.abi.chirp.service.auth
+package com.abi.chirp.service
 
 import com.abi.chirp.domain.exception.EmailNotVerifiedException
 import com.abi.chirp.domain.exception.InvalidCredentialsException
