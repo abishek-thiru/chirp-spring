@@ -1,5 +1,6 @@
 package com.abi.chirp.api.exception
 
+import com.abi.chirp.domain.RateLimitException
 import com.abi.chirp.domain.exception.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -79,6 +80,14 @@ class AuthExceptionHandler {
         e: SamePasswordException
     ) = mapOf(
         "code" to "SAME_PASSWORD",
+        "message" to e.message
+    )
+    @ExceptionHandler(RateLimitException::class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    fun onRateLimitExceeded(
+        e: RateLimitException
+    ) = mapOf(
+        "code" to "RATE_LIMIT_EXCEEDED",
         "message" to e.message
     )
 
