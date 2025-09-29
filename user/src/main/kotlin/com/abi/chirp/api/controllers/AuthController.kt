@@ -3,6 +3,7 @@ package com.abi.chirp.api.controllers
 import com.abi.chirp.api.dto.*
 import com.abi.chirp.api.mappers.toAuthenticatedUserDto
 import com.abi.chirp.api.mappers.toUserDto
+import com.abi.chirp.infra.rate_limiting.EmailRateLimiter
 import com.abi.chirp.service.AuthService
 import com.abi.chirp.service.EmailVerificationService
 import com.abi.chirp.service.PasswordResetService
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.*
 class AuthController(
     private val authService: AuthService,
     private val emailVerificationService: EmailVerificationService,
-    private val passwordResetService: PasswordResetService
+    private val passwordResetService: PasswordResetService,
+    private val emailRateLimiter: EmailRateLimiter
 ) {
 
     @PostMapping("/register")
@@ -44,6 +46,17 @@ class AuthController(
     ): AuthenticatedUserDto {
         return authService.refresh(body.refreshToken)
             .toAuthenticatedUserDto()
+    }
+
+    @PostMapping("/resend-verification")
+    fun resendVerification(
+        @Valid @RequestBody body: EmailRequest
+    ) {
+        emailRateLimiter.withRateLimit(
+            email = body.email
+        ) {
+            emailVerificationService.resendVerificationEmail(body.email)
+        }
     }
 
     @GetMapping("/verify")
