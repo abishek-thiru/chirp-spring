@@ -1,6 +1,6 @@
 package com.abi.chirp.api.exception
 
-import com.abi.chirp.domain.RateLimitException
+import com.abi.chirp.domain.exception.RateLimitException
 import com.abi.chirp.domain.exception.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

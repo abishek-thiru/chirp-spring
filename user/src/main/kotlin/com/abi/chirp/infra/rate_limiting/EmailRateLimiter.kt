@@ -1,6 +1,6 @@
 package com.abi.chirp.infra.rate_limiting
 
-import com.abi.chirp.domain.RateLimitException
+import com.abi.chirp.domain.exception.RateLimitException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.data.redis.core.StringRedisTemplate
