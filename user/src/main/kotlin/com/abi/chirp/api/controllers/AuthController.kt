@@ -4,6 +4,7 @@ import com.abi.chirp.api.config.IpRateLimit
 import com.abi.chirp.api.dto.*
 import com.abi.chirp.api.mappers.toAuthenticatedUserDto
 import com.abi.chirp.api.mappers.toUserDto
+import com.abi.chirp.api.util.requestUserId
 import com.abi.chirp.infra.rate_limiting.EmailRateLimiter
 import com.abi.chirp.service.AuthService
 import com.abi.chirp.service.EmailVerificationService
@@ -118,7 +119,11 @@ class AuthController(
     fun changePassword(
         @Valid @RequestBody body: ChangePasswordRequest
     ) {
-       // TODO: User ID to be extracted
+        passwordResetService.changePassword(
+            userId = requestUserId,
+            oldPassword = body.oldPassword,
+            newPassword = body.newPassword
+        )
     }
 
 }
