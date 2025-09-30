@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank
 
 data class ChangePasswordRequest(
     @field:NotBlank
-    @JsonProperty("password")
+    @JsonProperty("oldPassword")
     val oldPassword: String,
     @field:Password
     @JsonProperty("newPassword")

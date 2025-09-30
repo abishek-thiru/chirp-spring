@@ -1,6 +1,6 @@
 package com.abi.chirp.api.exception
 
-import com.abi.chirp.domain.RateLimitException
+import com.abi.chirp.domain.exception.RateLimitException
 import com.abi.chirp.domain.exception.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -71,6 +71,15 @@ class AuthExceptionHandler {
         e: EmailNotVerifiedException
     ) = mapOf(
         "code" to "EMAIL_NOT_VERIFIED",
+        "message" to e.message
+    )
+
+    @ExceptionHandler(UnauthorizedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onUnauthorized(
+        e: UnauthorizedException
+    ) = mapOf(
+        "code" to "UNAUTHORIZED",
         "message" to e.message
     )
 

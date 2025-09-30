@@ -1,4 +1,4 @@
-package com.abi.chirp.domain
+package com.abi.chirp.domain.exception
 
 class RateLimitException(
     val resetsInSeconds: Long
