@@ -1,7 +1,7 @@
 package com.abi.chirp.service
 
 import com.abi.chirp.domain.exception.InvalidTokenException
-import com.abi.chirp.domain.model.UserId
+import com.abi.chirp.domain.type.UserId
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys

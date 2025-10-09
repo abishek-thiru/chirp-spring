@@ -1,5 +1,6 @@
 package com.abi.chirp.service
 
+import com.abi.chirp.domain.events.user.UserEvent
 import com.abi.chirp.domain.exception.EmailNotVerifiedException
 import com.abi.chirp.domain.exception.InvalidCredentialsException
 import com.abi.chirp.domain.exception.InvalidTokenException
@@ -7,12 +8,13 @@ import com.abi.chirp.domain.exception.UserAlreadyExistsException
 import com.abi.chirp.domain.exception.UserNotFoundException
 import com.abi.chirp.domain.model.AuthenticatedUser
 import com.abi.chirp.domain.model.User
-import com.abi.chirp.domain.model.UserId
+import com.abi.chirp.domain.type.UserId
 import com.abi.chirp.infra.database.entities.RefreshTokenEntity
 import com.abi.chirp.infra.database.entities.UserEntity
 import com.abi.chirp.infra.database.mappers.toUser
 import com.abi.chirp.infra.database.repositories.RefreshTokenRepository
 import com.abi.chirp.infra.database.repositories.UserRepository
+import com.abi.chirp.infra.message_queue.EventPublisher
 import com.abi.chirp.infra.security.PasswordEncoder
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -27,7 +29,8 @@ class AuthService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val eventPublisher: EventPublisher
 ) {
 
     @Transactional
@@ -50,6 +53,17 @@ class AuthService(
         ).toUser()
 
         val token = emailVerificationService.createVerificationToken(trimmedEmail)
+
+        eventPublisher.publish(
+            event = UserEvent.Created(
+                userId = savedUser.id,
+                email = savedUser.email,
+                username = savedUser.username,
+                verificationToken = token.token,
+            )
+        )
+
+
 
         return savedUser
     }
