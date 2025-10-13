@@ -4,7 +4,7 @@ import com.abi.chirp.domain.exception.InvalidCredentialsException
 import com.abi.chirp.domain.exception.InvalidTokenException
 import com.abi.chirp.domain.exception.SamePasswordException
 import com.abi.chirp.domain.exception.UserNotFoundException
-import com.abi.chirp.domain.model.UserId
+import com.abi.chirp.domain.type.UserId
 import com.abi.chirp.infra.database.entities.PasswordResetTokenEntity
 import com.abi.chirp.infra.database.repositories.PasswordResetTokenRepository
 import com.abi.chirp.infra.database.repositories.RefreshTokenRepository

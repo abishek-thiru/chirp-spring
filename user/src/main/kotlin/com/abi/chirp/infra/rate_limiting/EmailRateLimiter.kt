@@ -49,6 +49,8 @@ class EmailRateLimiter(
         if (attemptCount == -1L) {
             throw RateLimitException(resetsInSeconds = ttl)
         }
+
+        action()
     }
 
 }
