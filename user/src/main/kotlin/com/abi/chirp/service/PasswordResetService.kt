@@ -1,5 +1,6 @@
 package com.abi.chirp.service
 
+import com.abi.chirp.domain.events.user.UserEvent
 import com.abi.chirp.domain.exception.InvalidCredentialsException
 import com.abi.chirp.domain.exception.InvalidTokenException
 import com.abi.chirp.domain.exception.SamePasswordException
@@ -9,6 +10,7 @@ import com.abi.chirp.infra.database.entities.PasswordResetTokenEntity
 import com.abi.chirp.infra.database.repositories.PasswordResetTokenRepository
 import com.abi.chirp.infra.database.repositories.RefreshTokenRepository
 import com.abi.chirp.infra.database.repositories.UserRepository
+import com.abi.chirp.infra.message_queue.EventPublisher
 import com.abi.chirp.infra.security.PasswordEncoder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
@@ -25,7 +27,8 @@ class PasswordResetService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     @param:Value("\${chirp.email.reset-password.expiry-minutes}")
-    private val expiryMinutes: Long
+    private val expiryMinutes: Long,
+    private val eventPublisher: EventPublisher
 ) {
 
     @Transactional
@@ -41,7 +44,15 @@ class PasswordResetService(
 
         passwordResetTokenRepository.save(token)
 
-        // TODO: Inform notification service about reset password triggered to send email
+        eventPublisher.publish(
+            event = UserEvent.RequestResetPassword(
+                userId = user.id!!,
+                email = user.email,
+                username = user.username,
+                passwordResetToken = token.token,
+                expiresInMinutes = expiryMinutes
+            )
+        )
     }
 
     @Transactional
