@@ -14,22 +14,23 @@ interface ChatRepository: JpaRepository<ChatEntity, ChatId> {
         LEFT JOIN FETCH c.creator
         WHERE c.id = :id
         AND EXISTS (
-        SELECT 1
-        FROM c.participants p
-        WHERE p.userId = :userId
+            SELECT 1
+            FROM c.participants p
+            WHERE p.userId = :userId
+        )
     """)
-    fun findById(id: ChatId, userId: UserId): ChatEntity?
+    fun findChatById(id: ChatId, userId: UserId): ChatEntity?
 
     @Query("""
         SELECT c
         FROM ChatEntity c
         LEFT JOIN FETCH c.participants
         LEFT JOIN FETCH c.creator
-        WHERE EXISTS(
-        SELECT 1
-        FROM c.participants p
-        WHERE p.userId = :userId
+        WHERE EXISTS (
+            SELECT 1
+            FROM c.participants p
+            WHERE p.userId = :userId
+        )
     """)
     fun findAllByUserId(userId: UserId): List<ChatEntity>
-
 }

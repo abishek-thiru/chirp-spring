@@ -16,7 +16,7 @@ interface ChatMessageRepository : JpaRepository<ChatMessageEntity, ChatMessageId
         SELECT m
         FROM ChatMessageEntity m
         WHERE m.chatId = :chatId
-        AND WHERE m.createdAt < :before
+        AND m.createdAt < :before
         ORDER BY m.createdAt DESC
     """
     )
@@ -26,7 +26,8 @@ interface ChatMessageRepository : JpaRepository<ChatMessageEntity, ChatMessageId
         pageable: Pageable
     ): Slice<ChatMessageEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT m
         FROM ChatMessageEntity m
         LEFT JOIN FETCH m.sender
@@ -38,7 +39,8 @@ interface ChatMessageRepository : JpaRepository<ChatMessageEntity, ChatMessageId
             ORDER BY m2.createdAt DESC
             LIMIT 1
         )
-    """)
+    """
+    )
     fun findLatestMessagesByChatIds(
         chatIds: Set<ChatId>
     ): List<ChatMessageEntity>
