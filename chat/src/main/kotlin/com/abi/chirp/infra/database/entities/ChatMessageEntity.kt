@@ -53,7 +53,7 @@ class ChatMessageEntity(
         insertable = false,
         updatable = false
     )
-    var sender: ChatParticipantEntity? = null,
+    var sender: ChatParticipantEntity,
     @CreationTimestamp
     var createdAt: Instant = Instant.now()
 )
