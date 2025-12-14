@@ -18,6 +18,12 @@ class NotificationUserEventListener(
         when (event) {
             is UserEvent.Created -> {
                 println("User created: ${event.occurredAt}")
+                emailService.sendVerificationEmail(
+                    email = event.email,
+                    username = event.username,
+                    userId = event.userId,
+                    token = event.verificationToken
+                )
             }
 
             is UserEvent.RequestResendVerification -> {
