@@ -9,7 +9,9 @@ import com.abi.chirp.api.util.requestUserId
 import com.abi.chirp.domain.type.ChatId
 import com.abi.chirp.service.ChatService
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 
 @RestController
@@ -43,6 +45,22 @@ class ChatController(
             creatorId = requestUserId,
             otherUserIds = body.otherUserIds.toSet()
         ).toChatDto()
+    }
+
+    @GetMapping("/{chatId}")
+    fun getChat(
+        @PathVariable("chatId") chatId: ChatId
+    ): ChatDto {
+        return chatService.getChatById(
+            chatId = chatId,
+            requestUserId = requestUserId
+        )?.toChatDto() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
+    @GetMapping
+    fun getChatsForUser(): List<ChatDto> {
+        return chatService.findChatsByUser(userId = requestUserId)
+            .map { it.toChatDto() }
     }
 
     @PostMapping("/{chatId}/add")

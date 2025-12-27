@@ -17,7 +17,7 @@ class CommonExceptionHandler {
         "message" to e.message
     )
 
-    @ExceptionHandler(ForbiddenException::class)
+    @ExceptionHandler(UnauthorizedException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onUnauthorized(e: UnauthorizedException) = mapOf(
         "code" to "UNAUTHORIZED",
