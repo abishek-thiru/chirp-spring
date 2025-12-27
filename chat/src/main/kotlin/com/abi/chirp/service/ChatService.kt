@@ -2,6 +2,8 @@ package com.abi.chirp.service
 
 import com.abi.chirp.api.dto.ChatMessageDto
 import com.abi.chirp.api.mappers.toChatMessageDto
+import com.abi.chirp.domain.event.ChatParticipantLeftEvent
+import com.abi.chirp.domain.event.ChatParticipantsJoinedEvent
 import com.abi.chirp.domain.exception.ChatNotFoundException
 import com.abi.chirp.domain.exception.ChatParticipantNotFoundException
 import com.abi.chirp.domain.exception.ForbiddenException
@@ -16,6 +18,7 @@ import com.abi.chirp.infra.database.mappers.toChatMessage
 import com.abi.chirp.infra.database.repositories.ChatMessageRepository
 import com.abi.chirp.infra.database.repositories.ChatParticipantRepository
 import com.abi.chirp.infra.database.repositories.ChatRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -26,7 +29,8 @@ import java.time.Instant
 class ChatService(
     private val chatRepository: ChatRepository,
     private val chatParticipantRepository: ChatParticipantRepository,
-    private val chatMessageRepository: ChatMessageRepository
+    private val chatMessageRepository: ChatMessageRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) {
 
     fun getChatMessages(
@@ -97,6 +101,13 @@ class ChatService(
             }
         ).toChat(lastMessage)
 
+        applicationEventPublisher.publishEvent(
+            ChatParticipantsJoinedEvent(
+                chatId = chatId,
+                userIds = userIds
+            )
+        )
+
         return updatedChat
     }
 
@@ -121,6 +132,13 @@ class ChatService(
             chat.apply {
                 this.participants = chat.participants - participant
             }
+        )
+
+        applicationEventPublisher.publishEvent(
+            ChatParticipantLeftEvent(
+                chatId = chatId,
+                userId = userId
+            )
         )
     }
 
